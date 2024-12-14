@@ -51,4 +51,10 @@ export class CustomerService {
       },
     });
   }
+  Catch(error) {
+    throw new BadRequestException(
+      'Erreur lors de la création de la location.',
+      error,
+    );
+  }
 }
