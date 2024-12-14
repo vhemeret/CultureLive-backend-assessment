@@ -41,5 +41,5 @@ model rental {
   return_date      DateTime?          @db.Timestamp(6)
   last_update      DateTime           @default(now()) @db.Timestamp(6)
   customer         customer           @relation(fields: [customer_id], references: [customer_id])
-  film             film?               @relation(fields: [film_id], references: [film_id])
+  film             film?              @relation(fields: [film_id], references: [film_id])
 }

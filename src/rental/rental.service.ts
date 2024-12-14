@@ -51,8 +51,9 @@ export class RentalService {
 
     return await this.prisma.rental.create({
       data: {
-        customer_id: data.customer_id,
-        film_id: data.film_id || null,
+        customer: { connect: { customer_id: data.customer_id } },
+        film: { connect: { film_id: data.film_id } },
+        rental_date: rentalDate,
         return_date: data.return_date,
       },
     });
