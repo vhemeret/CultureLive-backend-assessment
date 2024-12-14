@@ -528,7 +528,8 @@ CREATE TABLE rental (
     rental_date timestamp with time zone NOT NULL,
     inventory_id integer,
     customer_id integer NOT NULL,
-    return_date timestamp with time zone,
+    film_id integer,
+    return_date timestamp without time zone,
     staff_id integer,
     last_update timestamp without time zone DEFAULT now() NOT NULL
 );
@@ -1647,6 +1648,13 @@ ALTER TABLE ONLY payment
 
 ALTER TABLE ONLY rental
     ADD CONSTRAINT rental_customer_id_fkey FOREIGN KEY (customer_id) REFERENCES customer(customer_id) ON UPDATE CASCADE ON DELETE RESTRICT;
+
+--
+-- Name: rental_film_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY rental
+    ADD CONSTRAINT rental_film_id_fkey FOREIGN KEY (film_id) REFERENCES film(film_id) ON UPDATE CASCADE ON DELETE RESTRICT;
 
 
 --

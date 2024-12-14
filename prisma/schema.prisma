@@ -30,13 +30,16 @@ model film {
   description                                  String?
   release_year                                 Int?
   last_update                                  DateTime                @default(now()) @db.Timestamp(6)
+  rental            rental[]
 }
 
 model rental {
   rental_id        Int                @id @default(autoincrement())
   rental_date      DateTime           @db.Timestamp(6)
   customer_id      Int
+  film_id          Int?
   return_date      DateTime?          @db.Timestamp(6)
   last_update      DateTime           @default(now()) @db.Timestamp(6)
   customer         customer           @relation(fields: [customer_id], references: [customer_id])
+  film             film?               @relation(fields: [film_id], references: [film_id])
 }

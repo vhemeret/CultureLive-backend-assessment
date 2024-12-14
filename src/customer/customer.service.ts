@@ -5,7 +5,6 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateCustomerDTO } from './dto/create-customer.dto';
-import { NotFoundError } from 'rxjs';
 
 @Injectable()
 export class CustomerService {
