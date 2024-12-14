@@ -15,7 +15,7 @@ export class CustomerService {
   }
 
   async createCustomer(data: CreateCustomerDTO) {
-    if (!data.first_name || !data.last_name) {
+    if (!data.first_name || !data.last_name || !data.email) {
       throw new BadRequestException('Missing data to create a new customer.');
     }
 
