@@ -12,31 +12,35 @@ export class TasksService {
   ) {}
   private readonly logger = new Logger(TasksService.name);
 
-  listAllTasks() {
+  async listAllTasks() {
     const jobs = this.schedulerRegistry.getCronJobs();
+    let ret;
     jobs.forEach((job, key) => {
       try {
         const nextExecution = job.nextDate();
         this.logger.log(
           `Planified task(s) : ${nextExecution ? nextExecution.toJSDate() : 'Nothing planified.'}`,
         );
+        ret = `Planified task(s) : ${nextExecution ? nextExecution.toJSDate() : 'Nothing planified.'}`;
       } catch (error) {
         this.logger.error(
           `Error when trying to get planified tasks ${key} : ${error.message}`,
         );
+        return `Error when trying to get planified tasks ${key} : ${error.message}`;
       }
     });
+    return ret;
   }
 
-  runTask() {
+  async runTask() {
     const taskName = 'reminder';
     const job: CronJob = this.schedulerRegistry.getCronJob(taskName);
     if (job) {
       job.fireOnTick();
       this.logger.log(`Manually triggered task: ${taskName}`);
-      return `Task ${taskName} has been triggered manually.`;
+      return `Task: ${taskName} has been run manually.`;
     }
-    return `Task ${taskName} not found.`;
+    return `Task: ${taskName} not found.`;
   }
 
   //   to test every minute
