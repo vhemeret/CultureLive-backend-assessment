@@ -1,21 +1,50 @@
 import { Injectable, Logger } from '@nestjs/common';
-import { Cron } from '@nestjs/schedule';
+import { Cron, SchedulerRegistry } from '@nestjs/schedule';
 import { PrismaService } from 'src/prisma/prisma.service';
 import * as moment from 'moment-timezone';
+import { CronJob } from 'cron';
 
 @Injectable()
 export class TasksService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly schedulerRegistry: SchedulerRegistry,
+  ) {}
   private readonly logger = new Logger(TasksService.name);
 
+  listAllTasks() {
+    const jobs = this.schedulerRegistry.getCronJobs();
+    jobs.forEach((job, key) => {
+      try {
+        const nextExecution = job.nextDate();
+        this.logger.log(
+          `Planified task(s) : ${nextExecution ? nextExecution.toJSDate() : 'Nothing planified.'}`,
+        );
+      } catch (error) {
+        this.logger.error(
+          `Error when trying to get planified tasks ${key} : ${error.message}`,
+        );
+      }
+    });
+  }
+
+  runTask() {
+    const taskName = 'reminder';
+    const job: CronJob = this.schedulerRegistry.getCronJob(taskName);
+    if (job) {
+      job.fireOnTick();
+      this.logger.log(`Manually triggered task: ${taskName}`);
+      return `Task ${taskName} has been triggered manually.`;
+    }
+    return `Task ${taskName} not found.`;
+  }
+
   //   to test every minute
-  //     @Cron('* * * * *')
-  @Cron('0 12 * * *')
+  //   @Cron('* * * * *')
+  @Cron('0 12 * * *', { name: 'reminder' })
   async handleCron() {
     const rentals = await this.prisma.rental.findMany({
-      include: {
-        customer: true,
-      },
+      include: { customer: true },
     });
 
     rentals.forEach((rental) => {

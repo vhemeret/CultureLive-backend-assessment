@@ -8,6 +8,7 @@ done
 
 echo "Generate prisma client.."
 npx prisma generate
+sleep 2
 
 echo "Starting the app..."
 yarn start:dev
